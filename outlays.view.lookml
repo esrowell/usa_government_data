@@ -20,7 +20,7 @@
   - measure: account_count
     type: count_distinct
     sql: ${account_name}
-    drill_fields: [agency_code, bureau_code, account_name, total_y2017, change_2016_2017, change_2016_2017_percent, count]
+    drill_fields: [agency_code, bureau_code, account_name, total_2017, change_2016_2017, change_2016_2017_percent, count]
 
 
   - dimension: agency_code
@@ -41,7 +41,7 @@
   - measure: agency_count
     type: count_distinct
     sql: ${agency_code}
-    drill_fields: [agency_code, agency_name, bureau_count, account_count, total_y2017, change_2016_2017, change_2016_2017_percent, count]
+    drill_fields: [agency_code, agency_name, bureau_count, account_count, total_2017, change_2016_2017, change_2016_2017_percent, count]
 
   - dimension: bea_category
     type: string
@@ -65,7 +65,7 @@
   - measure: bureau_count
     type: count_distinct
     sql: ${bureau_code}
-    drill_fields: [agency_code, bureau_code, bureau_name, account_count, total_y2017,change_2016_2017, change_2016_2017_percent, count]
+    drill_fields: [agency_code, bureau_code, bureau_name, account_count, total_2017,change_2016_2017, change_2016_2017_percent, count]
 
 
   - dimension: grant_non_grant_split
@@ -362,5 +362,4 @@
     label: Number of Outlays
     type: count
     approximate_threshold: 100000
-    drill_fields: [agency_name, bureau_name, account_name, subfunction_title, total_y2017, change_2016_2017, change_2016_2017_percent]
-
+    drill_fields: [agency_name, bureau_name, account_name, subfunction_title, total_2017, change_2016_2017, change_2016_2017_percent]
