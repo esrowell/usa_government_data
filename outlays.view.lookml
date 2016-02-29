@@ -314,19 +314,23 @@
 # 
   - dimension: y2016
     type: string
-    sql: FLOAT(REPLACE(${TABLE}.y2016,',',''))
+    sql: FLOAT(REPLACE(${TABLE}.y2016,',',''))/1000
+    value_format_name: usd_0
     
   - measure: total_y2016
     type: sum
     sql: ${y2016}
+    value_format_name: usd_0
 
   - dimension: y2017
     type: number
-    sql: FLOAT(REPLACE(${TABLE}.y2017,',',''))
+    sql: FLOAT(REPLACE(${TABLE}.y2017,',',''))/1000
+    value_format_name: usd_0
     
   - measure: change_2016_2017
     type: number
     sql: ${total_y2017}-${total_y2016}
+    value_format_name: usd_0
     
   - measure: change_2016_2017_percent
     type: number
@@ -336,6 +340,7 @@
   - measure: total_y2017
     type: sum
     sql: ${y2017}
+    value_format_name: usd_0
 # 
 #   - dimension: y2018
 #     type: string
