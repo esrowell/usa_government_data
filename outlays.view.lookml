@@ -320,9 +320,9 @@
     type: number
     sql: FLOAT(REPLACE(${TABLE}.y2017,',',''))
     
-#   - measure: total_y2017
-#     type: sum
-#     sql: ${y2017}
+  - measure: total_y2017
+    type: sum
+    sql: ${y2017}
 # 
 #   - dimension: y2018
 #     type: string
