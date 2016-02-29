@@ -20,7 +20,7 @@
   - measure: account_count
     type: count_distinct
     sql: ${account_name}
-    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_name, count]
+    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_name, total_y2017, count]
 
 
   - dimension: agency_code
@@ -41,7 +41,7 @@
   - measure: agency_count
     type: count_distinct
     sql: ${agency_code}
-    drill_fields: [agency_code, agency_name, bureau_count, account_count, count]
+    drill_fields: [agency_code, agency_name, bureau_count, account_count, total_y2017, count]
 
   - dimension: bea_category
     type: string
@@ -65,7 +65,7 @@
   - measure: bureau_count
     type: count_distinct
     sql: ${bureau_code}
-    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_count, count]
+    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_count, count, total_y2017]
 
 
   - dimension: grant_non_grant_split
