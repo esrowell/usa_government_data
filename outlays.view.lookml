@@ -317,7 +317,7 @@
     sql: FLOAT(REPLACE(${TABLE}.y2016,',',''))/1000
     value_format_name: usd_0
     
-  - measure: total_y2016
+  - measure: total_2016
     type: sum
     sql: ${y2016}
     value_format_name: usd_0
@@ -329,15 +329,15 @@
     
   - measure: change_2016_2017
     type: number
-    sql: ${total_y2017}-${total_y2016}
+    sql: ${total_2017}-${total_2016}
     value_format_name: usd_0
     
   - measure: change_2016_2017_percent
     type: number
-    sql: ${change_2016_2017}/${total_y2016}
+    sql: ${change_2016_2017}/${total_2016}
     value_format_name: percent_3
     
-  - measure: total_y2017
+  - measure: total_2017
     type: sum
     sql: ${y2017}
     value_format_name: usd_0
@@ -362,5 +362,5 @@
     label: Number of Outlays
     type: count
     approximate_threshold: 100000
-    drill_fields: [agency_name, bureau_name, bea_category, account_name, subfunction_title, total_y2017, change_2016_2017, change_2016_2017_percent]
+    drill_fields: [agency_name, bureau_name, account_name, subfunction_title, total_y2017, change_2016_2017, change_2016_2017_percent]
 
