@@ -341,6 +341,7 @@
 #     sql: ${TABLE}.y2021
 
   - measure: count
+    label: Number of Outlays
     type: count
     approximate_threshold: 100000
     drill_fields: [agency_name, bureau_name, bea_category, account_name, subfunction_title, total_y2017, count]
