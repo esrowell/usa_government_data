@@ -20,7 +20,7 @@
   - measure: account_count
     type: count_distinct
     sql: ${account_name}
-    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_name, total_y2017, change_2016_2017, change_2016_2017_percent, count]
+    drill_fields: [agency_code, bureau_code, account_name, total_y2017, change_2016_2017, change_2016_2017_percent, count]
 
 
   - dimension: agency_code
@@ -65,7 +65,7 @@
   - measure: bureau_count
     type: count_distinct
     sql: ${bureau_code}
-    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_count, total_y2017,change_2016_2017, change_2016_2017_percent, count]
+    drill_fields: [agency_code, bureau_code, bureau_name, account_count, total_y2017,change_2016_2017, change_2016_2017_percent, count]
 
 
   - dimension: grant_non_grant_split
