@@ -20,7 +20,7 @@
   - measure: account_count
     type: count_distinct
     sql: ${account_name}
-    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_name, total_y2017, count]
+    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_name, total_y2017, change_2016_2017, change_2016_2017_percent, count]
 
 
   - dimension: agency_code
@@ -41,7 +41,7 @@
   - measure: agency_count
     type: count_distinct
     sql: ${agency_code}
-    drill_fields: [agency_code, agency_name, bureau_count, account_count, total_y2017, count]
+    drill_fields: [agency_code, agency_name, bureau_count, account_count, total_y2017, change_2016_2017, change_2016_2017_percent, count]
 
   - dimension: bea_category
     type: string
@@ -65,7 +65,7 @@
   - measure: bureau_count
     type: count_distinct
     sql: ${bureau_code}
-    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_count, count, total_y2017]
+    drill_fields: [agency_code, agency_name, bureau_code, bureau_name, account_count, total_y2017,change_2016_2017, change_2016_2017_percent, count]
 
 
   - dimension: grant_non_grant_split
@@ -312,13 +312,26 @@
 #     type: string
 #     sql: ${TABLE}.y2015
 # 
-#   - dimension: y2016
-#     type: string
-#     sql: ${TABLE}.y2016
-# 
+  - dimension: y2016
+    type: string
+    sql: FLOAT(REPLACE(${TABLE}.y2016,',',''))
+    
+  - measure: total_y2016
+    type: sum
+    sql: ${y2016}
+
   - dimension: y2017
     type: number
     sql: FLOAT(REPLACE(${TABLE}.y2017,',',''))
+    
+  - measure: change_2016_2017
+    type: number
+    sql: ${total_y2017}-${total_y2016}
+    
+  - measure: change_2016_2017_percent
+    type: number
+    sql: ${change_2016_2017}/${total_y2016}
+    value_format_name: percent_3
     
   - measure: total_y2017
     type: sum
