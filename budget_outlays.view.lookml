@@ -1,4 +1,6 @@
-- view: outlays
+- explore: budget_outlays
+
+- view: budget_outlays
   sql_table_name: |
     us_budget.outlays
   fields:
