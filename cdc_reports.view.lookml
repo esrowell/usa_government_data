@@ -1,7 +1,7 @@
 - explore: cdc_reports
 - view: cdc_reports
   sql_table_name: |
-      [disco-parsec-659:cdc_project_tycho.reports]
+      [cdc.project_tycho_reports]
   fields:
 
   - dimension: cases
