@@ -141,7 +141,11 @@
   
     type: count
     approximate_threshold: 100000
-    drill_fields: [agency_name, bureau_name, account_name, subfunction_title, total_2017, change_2016_2017, change_2016_2017_percent]  
+    drill_fields: detail*
+    
+  sets:
+    dimensions: [agency_name, bureau_name, account_name, subfunction_title]
+    detail: [dimensions*, total_2017, change_2016_2017, change_2016_2017_percent]  
     
 # take each of the year columns and convert them into a single column  
 - view: item_year_amount
@@ -225,6 +229,7 @@
     type: number
     sql: FLOAT(${total_amount}) / ${budget_year_facts.total_annual_budget}
     value_format_name: percent_3
+    drill_fields: [budget_outlays.dimensions*,percent_of_annual_budget]
   
 - explore: budget_year_facts
 - view: budget_year_facts
