@@ -32,7 +32,7 @@
     - label: Website
       url: http://www.google.com/search?q={{ agency_name._value }}+{{ bureau_name._value }}+{{value}}}&btnI
     - label: Wikipedia
-      url: http://www.google.com/search?q=site:wikipedia.com+{{value}- {{ bureau_name._value }}}&btnI
+      url: http://www.google.com/search?q=site:wikipedia.com+{{value}}- {{ bureau_name._value }}}&btnI
       icon_url: https://en.wikipedia.org/static/favicon/wikipedia.ico
 
   - measure: account_count
