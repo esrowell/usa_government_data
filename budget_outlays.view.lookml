@@ -1,3 +1,23 @@
+#
+# Us Budget.
+#
+#  Original Data: 
+#   https://www.whitehouse.gov/sites/default/files/omb/budget/fy2017/assets/outlays.csv
+#
+#  In BigQuery:
+#   https://bigquery.cloud.google.com/table/lookerdata:us_budget.outlays
+#
+#  On GitHub
+#   https://github.com/looker/usa_government_data/blob/master/budget_outlays.view.lookml
+#
+
+# This data is loaded directly into bigquery.  All data was loaded as strings for simplicity,
+#  data gets converted to the appropriate type on use.
+# Data is overly normalized with a column for each year for each budget line item. 
+#   We denormalize the data using a large union statement to to build a line_item_year table.
+# We then convert then build a budget_year_facts table so we can compute each line item
+#  as a percentage of the entire years budget.
+#
 - explore: budget_outlays
   joins:
   - join: item_year_amount
