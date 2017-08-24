@@ -1,7 +1,7 @@
 #
 # Us Budget.
 #
-#  Original Data: 
+#  Original Data:
 #   https://www.whitehouse.gov/sites/default/files/omb/budget/fy2017/assets/outlays.csv
 #
 #  In BigQuery:
@@ -13,166 +13,232 @@
 
 # This data is loaded directly into bigquery.  All data was loaded as strings for simplicity,
 #  data gets converted to the appropriate type on use.
-# Data is overly normalized with a column for each year for each budget line item. 
+# Data is overly normalized with a column for each year for each budget line item.
 #   We denormalize the data using a large union statement to to build a line_item_year table.
 # We then convert then build a budget_year_facts table so we can compute each line item
 #  as a percentage of the entire years budget.
 #
-- explore: budget_outlays
-  joins:
-  - join: item_year_amount
-    sql_on: ${id} = ${item_year_amount.budget_item_id}
+explore: budget_outlays {
+  join: item_year_amount {
+    sql_on: ${id} = ${item_year_amount.budget_item_id} ;;
     relationship: one_to_many
-    
-  - join: budget_year_facts
-    sql_on: ${item_year_amount.year} = ${budget_year_facts.year}
-    relationship: many_to_one
-  
+  }
 
-- view: budget_outlays
-  derived_table:
-    persist_for: 10000 hours
-    sql: |
-      (SELECT * FROM (
+  join: budget_year_facts {
+    sql_on: ${item_year_amount.year} = ${budget_year_facts.year} ;;
+    relationship: many_to_one
+  }
+}
+
+view: budget_outlays {
+  derived_table: {
+    persist_for: "10000 hours"
+    sql: (SELECT * FROM (
         SELECT *, ROW_NUMBER() OVER () as id FROM us_budget.outlays)
       )
-      
-  fields:
-  - dimension: id
-    primary_key: true
+       ;;
+  }
 
-  - dimension: account_code
+  dimension: id {
+    primary_key: yes
+  }
+
+  dimension: account_code {
     type: string
-    sql: ${TABLE}.account_code
+    sql: ${TABLE}.account_code ;;
+  }
 
-  - dimension: account_name
+  dimension: account_name {
     type: string
-    sql: ${TABLE}.account_name
-    links:
-    - label: Website
-      url: http://www.google.com/search?q={{ agency_name._value }}+{{ bureau_name._value }}+{{value}}}&btnI
-    - label: Wikipedia
-      url: http://www.google.com/search?q=site:wikipedia.com+{{value}}- {{ bureau_name._value }}}&btnI
-      icon_url: https://en.wikipedia.org/static/favicon/wikipedia.ico
+    sql: ${TABLE}.account_name ;;
 
-  - measure: account_count
+    link: {
+      label: "Website"
+      url: "http://www.google.com/search?q={{ agency_name._value }}+{{ bureau_name._value }}+{{value}}}&btnI"
+    }
+
+    link: {
+      label: "Wikipedia"
+      url: "http://www.google.com/search?q=site:wikipedia.com+{{value}}- {{ bureau_name._value }}}&btnI"
+      icon_url: "https://en.wikipedia.org/static/favicon/wikipedia.ico"
+    }
+  }
+
+  measure: account_count {
     type: count_distinct
-    sql: ${account_name}
-    drill_fields: [agency_code, bureau_code, account_name, total_2017, change_2016_2017, change_2016_2017_percent, count]
+    sql: ${account_name} ;;
+    drill_fields: [
+      agency_code,
+      bureau_code,
+      account_name,
+      total_2017,
+      change_2016_2017,
+      change_2016_2017_percent,
+      count
+    ]
+  }
 
-
-  - dimension: agency_code
+  dimension: agency_code {
     type: string
-    sql: ${TABLE}.agency_code
+    sql: ${TABLE}.agency_code ;;
+  }
 
-  - dimension: agency_name
+  dimension: agency_name {
     type: string
-    sql: ${TABLE}.agency_name
+    sql: ${TABLE}.agency_name ;;
     drill_fields: [bureau_name]
-    links:
-    - label: Website
-      url: http://www.google.com/search?q={{value}}&btnI
-    - label: Wikipedia
-      url: http://www.google.com/search?q=site:wikipedia.com+{{value}}&btnI
-      icon_url: https://en.wikipedia.org/static/favicon/wikipedia.ico
 
-  - measure: agency_count
+    link: {
+      label: "Website"
+      url: "http://www.google.com/search?q={{value}}&btnI"
+    }
+
+    link: {
+      label: "Wikipedia"
+      url: "http://www.google.com/search?q=site:wikipedia.com+{{value}}&btnI"
+      icon_url: "https://en.wikipedia.org/static/favicon/wikipedia.ico"
+    }
+  }
+
+  measure: agency_count {
     type: count_distinct
-    sql: ${agency_code}
-    drill_fields: [agency_code, agency_name, bureau_count, account_count, total_2017, change_2016_2017, change_2016_2017_percent, count]
+    sql: ${agency_code} ;;
+    drill_fields: [
+      agency_code,
+      agency_name,
+      bureau_count,
+      account_count,
+      total_2017,
+      change_2016_2017,
+      change_2016_2017_percent,
+      count
+    ]
+  }
 
-  - dimension: bea_category
+  dimension: bea_category {
     type: string
-    sql: ${TABLE}.bea_category
+    sql: ${TABLE}.bea_category ;;
+  }
 
-  - dimension: bureau_code
+  dimension: bureau_code {
     type: string
-    sql: ${TABLE}.bureau_code
+    sql: ${TABLE}.bureau_code ;;
+  }
 
-  - dimension: bureau_name
+  dimension: bureau_name {
     type: string
-    sql: ${TABLE}.bureau_name
+    sql: ${TABLE}.bureau_name ;;
     drill_fields: [account_name]
-    links:
-    - label: Website
-      url: http://www.google.com/search?q={{value}}&btnI
-    - label: Wikipedia
-      url: http://www.google.com/search?q=site:wikipedia.com+{{value}}&btnI
-      icon_url: https://en.wikipedia.org/static/favicon/wikipedia.ico
-    
-  - measure: bureau_count
+
+    link: {
+      label: "Website"
+      url: "http://www.google.com/search?q={{value}}&btnI"
+    }
+
+    link: {
+      label: "Wikipedia"
+      url: "http://www.google.com/search?q=site:wikipedia.com+{{value}}&btnI"
+      icon_url: "https://en.wikipedia.org/static/favicon/wikipedia.ico"
+    }
+  }
+
+  measure: bureau_count {
     type: count_distinct
-    sql: ${bureau_code}
-    drill_fields: [agency_code, bureau_code, bureau_name, account_count, total_2017,change_2016_2017, change_2016_2017_percent, count]
+    sql: ${bureau_code} ;;
+    drill_fields: [
+      agency_code,
+      bureau_code,
+      bureau_name,
+      account_count,
+      total_2017,
+      change_2016_2017,
+      change_2016_2017_percent,
+      count
+    ]
+  }
 
-
-  - dimension: grant_non_grant_split
+  dimension: grant_non_grant_split {
     type: string
-    sql: ${TABLE}.grant_non_grant_split
+    sql: ${TABLE}.grant_non_grant_split ;;
+  }
 
-  - dimension: on_or_off_budget
+  dimension: on_or_off_budget {
     type: string
-    sql: ${TABLE}.on_or_off_budget
+    sql: ${TABLE}.on_or_off_budget ;;
+  }
 
-  - dimension: subfunction_code
+  dimension: subfunction_code {
     type: string
-    sql: ${TABLE}.subfunction_code
+    sql: ${TABLE}.subfunction_code ;;
+  }
 
-  - dimension: subfunction_title
+  dimension: subfunction_title {
     type: string
-    sql: ${TABLE}.subfunction_title
+    sql: ${TABLE}.subfunction_title ;;
+  }
 
-  - dimension: treasury_agency_code
+  dimension: treasury_agency_code {
     type: string
-    sql: ${TABLE}.treasury_agency_code
+    sql: ${TABLE}.treasury_agency_code ;;
+  }
 
-  - dimension: y2016
+  dimension: y2016 {
     type: string
-    sql: FLOAT(REPLACE(${TABLE}.y2016,',',''))/1000
+    sql: FLOAT(REPLACE(${TABLE}.y2016,',',''))/1000 ;;
     value_format_name: usd_0
-    
-  - measure: total_2016
+  }
+
+  measure: total_2016 {
     type: sum
-    sql: ${y2016}
+    sql: ${y2016} ;;
     value_format_name: usd_0
+  }
 
-  - dimension: y2017
+  dimension: y2017 {
     type: number
-    sql: FLOAT(REPLACE(${TABLE}.y2017,',',''))/1000
+    sql: FLOAT(REPLACE(${TABLE}.y2017,',',''))/1000 ;;
     value_format_name: usd_0
-    
-  - measure: change_2016_2017
+  }
+
+  measure: change_2016_2017 {
     type: number
-    sql: ${total_2017}-${total_2016}
+    sql: ${total_2017}-${total_2016} ;;
     value_format_name: usd_0
-    
-  - measure: change_2016_2017_percent
+  }
+
+  measure: change_2016_2017_percent {
     type: number
-    sql: ${change_2016_2017}/${total_2016}
+    sql: ${change_2016_2017}/${total_2016} ;;
     value_format_name: percent_3
-    
-  - measure: total_2017
+  }
+
+  measure: total_2017 {
     type: sum
-    sql: ${y2017}
+    sql: ${y2017} ;;
     value_format_name: usd_0
-    
-  - measure: count
-    label: Number of Outlays
-  
+  }
+
+  measure: count {
+    label: "Number of Outlays"
     type: count
     approximate_threshold: 100000
-    drill_fields: detail*
-    
-  sets:
-    dimensions: [agency_name, bureau_name, account_name, subfunction_title]
-    detail: [dimensions*, total_2017, change_2016_2017, change_2016_2017_percent]  
-    
-# take each of the year columns and convert them into a single column  
-- view: item_year_amount
-  derived_table:
-    persist_for: 10000 hours
-    sql: |
-      (SELECT *, FLOAT(REPLACE(amount,',',''))/1000 as budget, ROW_NUMBER() OVER() as id FROM
+    drill_fields: [detail*]
+  }
+
+  set: dimensions {
+    fields: [agency_name, bureau_name, account_name, subfunction_title]
+  }
+
+  set: detail {
+    fields: [dimensions*, total_2017, change_2016_2017, change_2016_2017_percent]
+  }
+}
+
+# take each of the year columns and convert them into a single column
+view: item_year_amount {
+  derived_table: {
+    persist_for: "10000 hours"
+    sql: (SELECT *, FLOAT(REPLACE(amount,',',''))/1000 as budget, ROW_NUMBER() OVER() as id FROM
          (SELECT id as budget_item_id, 1963 as year, y1963 as amount FROM ${budget_outlays.SQL_TABLE_NAME}),
          (SELECT id as budget_item_id, 1964 as year, y1964 as amount FROM ${budget_outlays.SQL_TABLE_NAME}),
          (SELECT id as budget_item_id, 1965 as year, y1965 as amount FROM ${budget_outlays.SQL_TABLE_NAME}),
@@ -229,42 +295,53 @@
          (SELECT id as budget_item_id, 2016 as year, y2016 as amount FROM ${budget_outlays.SQL_TABLE_NAME}),
          (SELECT id as budget_item_id, 2017 as year, y2017 as amount FROM ${budget_outlays.SQL_TABLE_NAME})
       )
-  
-  fields:
-  - dimension: id
-    primary_key: true
-  
-  - dimension: budget_item_id
-  
-  - dimension: year
+       ;;
+  }
+
+  dimension: id {
+    primary_key: yes
+  }
+
+  dimension: budget_item_id {}
+
+  dimension: year {
     type: number
     value_format: "0000"
-  
-  - measure: total_amount
+  }
+
+  measure: total_amount {
     type: sum
-    sql: ${TABLE}.budget
+    sql: ${TABLE}.budget ;;
     value_format_name: usd_0
-    
-  - measure: percent_of_annual_budget
+  }
+
+  measure: percent_of_annual_budget {
     type: number
-    sql: FLOAT(${total_amount}) / ${budget_year_facts.total_annual_budget}
+    sql: FLOAT(${total_amount}) / ${budget_year_facts.total_annual_budget} ;;
     value_format_name: percent_3
-    drill_fields: [budget_outlays.dimensions*,percent_of_annual_budget]
-  
-- explore: budget_year_facts
-- view: budget_year_facts
-  derived_table:
-    persist_for: 10000 hours
-    sql: |
-      SELECT year, SUM(budget) as annual_budget FROM ${item_year_amount.SQL_TABLE_NAME} GROUP BY 1
-  fields:
-  - dimension: year
-    primary_key: true
-    #hidden: true
-    
-  - dimension: annual_budget
-    
-  - measure: total_annual_budget
+    drill_fields: [budget_outlays.dimensions*, percent_of_annual_budget]
+  }
+}
+
+explore: budget_year_facts {}
+
+view: budget_year_facts {
+  derived_table: {
+    persist_for: "10000 hours"
+    sql: SELECT year, SUM(budget) as annual_budget FROM ${item_year_amount.SQL_TABLE_NAME} GROUP BY 1
+      ;;
+  }
+
+  dimension: year {
+    primary_key: yes
+  }
+
+  #hidden: true
+
+  dimension: annual_budget {}
+
+  measure: total_annual_budget {
     type: sum
-    sql: FLOOR(${TABLE}.annual_budget)
-    
+    sql: FLOOR(${TABLE}.annual_budget) ;;
+  }
+}

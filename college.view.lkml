@@ -1,11 +1,12 @@
-- explore: college
+include: "college_generated.view.lkml"
+explore: college {}
 
-- view: college
+view: college {
   extends: [college_generated]
-  derived_table:
-    persist_for: 1000 hours
-    sql: |
-      (SELECT * FROM
+
+  derived_table: {
+    persist_for: "1000 hours"
+    sql: (SELECT * FROM
         (SELECT 1996 as year,* from college.merged_1996),
         (SELECT 1997 as year,* from college.merged_1997),
         (SELECT 1998 as year,* from college.merged_1998),
@@ -25,57 +26,66 @@
         (SELECT 2012 as year,* from college.merged_2012),
         (SELECT 2013 as year,* from college.merged_2013)
       )
+       ;;
+  }
 
-  fields:
-  - dimension: year
+  dimension: year {
     type: number
-    sql: ${TABLE}.year
+    sql: ${TABLE}.year ;;
     value_format: "0000"
-  
-  - measure: row_count
+  }
+
+  measure: row_count {
     type: count
-    
-  - measure: average_instate_tuition
+  }
+
+  measure: average_instate_tuition {
     type: average
-    sql: ${tuitionfee_in}
+    sql: ${tuitionfee_in} ;;
     value_format_name: usd_0
-    
+  }
+
   # School
 
-  - dimension: instnm
-    view_label: School
-    label: Name
+  dimension: instnm {
+    view_label: "School"
+    label: "Name"
+  }
 
-  - dimension: city
-    view_label: School
-    label: City
+  dimension: city {
+    view_label: "School"
+    label: "City"
+  }
 
-  - dimension: zip
-    view_label: School
-    label: Zip
-    
-  - dimension: accredagency
-    view_label: School
-    label: Accrediting Agency
-    
-  - dimension: insturl
-    view_label: School
-    label: School Url
-    
-  - dimension: opeid6
-    view_label: School
-    label: ID
-    
-  - dimension: stabbr
-    view_label: School
-    label: State
-    
-  - measure: school_count
-    view_label: School
+  dimension: zip {
+    view_label: "School"
+    label: "Zip"
+  }
+
+  dimension: accredagency {
+    view_label: "School"
+    label: "Accrediting Agency"
+  }
+
+  dimension: insturl {
+    view_label: "School"
+    label: "School Url"
+  }
+
+  dimension: opeid6 {
+    view_label: "School"
+    label: "ID"
+  }
+
+  dimension: stabbr {
+    view_label: "School"
+    label: "State"
+  }
+
+  measure: school_count {
+    view_label: "School"
     type: count_distinct
-    sql: ${opeid}
-    drill_fields: [opeid,instnm,city,stabbr]
-    
-    
-  
-    
+    sql: ${opeid} ;;
+    drill_fields: [opeid, instnm, city, stabbr]
+  }
+}
