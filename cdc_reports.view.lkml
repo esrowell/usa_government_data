@@ -41,7 +41,7 @@ view: cdc_reports {
   }
 
   dimension: epi_year {
-    label: "Inceftion Year"
+    label: "Infection Year"
     type: number
     sql: FLOOR(${epi_week}/100) ;;
   }
