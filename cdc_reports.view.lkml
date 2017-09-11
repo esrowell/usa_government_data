@@ -15,6 +15,7 @@ view: cdc_reports {
   measure: total_cases {
     type: sum
     sql: ${cases} ;;
+    drill_fields: [loc, total_cases]
   }
 
   dimension: disease {
